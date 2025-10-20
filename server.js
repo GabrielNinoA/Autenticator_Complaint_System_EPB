@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const database = require('./src/config/database');
 const authRoutes = require('./src/routes/authRoutes');
 const { errorHandler, notFoundHandler } = require('./src/middleware/errorHandler');
@@ -7,7 +8,19 @@ const { errorHandler, notFoundHandler } = require('./src/middleware/errorHandler
 const app = express();
 const PORT = process.env.AUTH_SERVICE_PORT || 3001;
 
+// Configurar CORS para permitir peticiones desde el frontend
+const corsOptions = {
+    origin: [
+        'https://complaints-system-epb-deploy-dl.onrender.com',
+        'http://localhost:3000'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+};
+
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
