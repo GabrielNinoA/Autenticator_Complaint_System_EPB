@@ -8,12 +8,30 @@ const { errorHandler, notFoundHandler } = require('./src/middleware/errorHandler
 const app = express();
 const PORT = process.env.AUTH_SERVICE_PORT || 3001;
 
-// Configurar CORS para permitir peticiones desde el frontend
+// Configurar CORS para permitir peticiones solo desde:
+// - la URL en la variable de entorno `Main-Deploy`
+// - la URL en la variable de entorno `Personal-Deploy`
+// - el localhost (http://localhost:3000)
+const mainDeploy = process.env['Main-Deploy'];
+const personalDeploy = process.env['Personal-Deploy'];
+
+const allowedOrigins = [];
+if (mainDeploy) allowedOrigins.push(mainDeploy);
+if (personalDeploy) allowedOrigins.push(personalDeploy);
+// Permitir localhost para desarrollo
+allowedOrigins.push('http://localhost:3000');
+
 const corsOptions = {
-    origin: [
-        'https://complaints-system-epb-deploy-dl.onrender.com',
-        'http://localhost:3000'
-    ],
+    origin: function (origin, callback) {
+        // origin undefined: petición desde servidor/cli (curl, postman) — permitir
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+
+        return callback(new Error('CORS policy: Origin not allowed'), false);
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
