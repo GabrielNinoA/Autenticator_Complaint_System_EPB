@@ -12,8 +12,8 @@ const PORT = process.env.AUTH_SERVICE_PORT || 3001;
 // - la URL en la variable de entorno `Main-Deploy`
 // - la URL en la variable de entorno `Personal-Deploy`
 // - el localhost (http://localhost:3000)
-const mainDeploy = process.env['Main-Deploy'];
-const personalDeploy = process.env['Personal-Deploy'];
+const mainDeploy = process.env['Main_Deploy'];
+const personalDeploy = process.env['Personal_Deploy'];
 
 const allowedOrigins = [];
 if (mainDeploy) allowedOrigins.push(mainDeploy);
