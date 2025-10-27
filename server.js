@@ -21,10 +21,15 @@ if (personalDeploy) allowedOrigins.push(personalDeploy);
 // Permitir localhost para desarrollo
 allowedOrigins.push('http://localhost:3000');
 
+// Log para depuración: mostrar orígenes permitidos
+console.log('🔒 Orígenes CORS permitidos:', allowedOrigins);
+
 const corsOptions = {
     origin: function (origin, callback) {
         // origin undefined: petición desde servidor/cli (curl, postman) — permitir
         if (!origin) return callback(null, true);
+
+        console.log('🌐 Petición desde origin:', origin, '| Permitido:', allowedOrigins.indexOf(origin) !== -1);
 
         if (allowedOrigins.indexOf(origin) !== -1) {
             return callback(null, true);
