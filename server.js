@@ -12,8 +12,8 @@ const PORT = process.env.AUTH_SERVICE_PORT || 3001;
 // - la URL en la variable de entorno `Main-Deploy`
 // - la URL en la variable de entorno `Personal-Deploy`
 // - el localhost (http://localhost:3000)
-const mainDeploy = process.env['Main-Deploy'];
-const personalDeploy = process.env['Personal-Deploy'];
+const mainDeploy = process.env['Main_Deploy'];
+const personalDeploy = process.env['Personal_Deploy'];
 
 const allowedOrigins = [];
 if (mainDeploy) allowedOrigins.push(mainDeploy);
@@ -21,10 +21,15 @@ if (personalDeploy) allowedOrigins.push(personalDeploy);
 // Permitir localhost para desarrollo
 allowedOrigins.push('http://localhost:3000');
 
+// Log para depuración: mostrar orígenes permitidos
+console.log('🔒 Orígenes CORS permitidos:', allowedOrigins);
+
 const corsOptions = {
     origin: function (origin, callback) {
         // origin undefined: petición desde servidor/cli (curl, postman) — permitir
         if (!origin) return callback(null, true);
+
+        console.log('🌐 Petición desde origin:', origin, '| Permitido:', allowedOrigins.indexOf(origin) !== -1);
 
         if (allowedOrigins.indexOf(origin) !== -1) {
             return callback(null, true);
