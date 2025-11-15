@@ -6,20 +6,26 @@ const authRoutes = require('./src/routes/authRoutes');
 const { errorHandler, notFoundHandler } = require('./src/middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.AUTH_SERVICE_PORT || 3001;
+const PORT = process.env.AUTH_SERVICE_PORT || 3002;
 
-// Configurar CORS para permitir peticiones solo desde:
-// - la URL en la variable de entorno `Main-Deploy`
-// - la URL en la variable de entorno `Personal-Deploy`
-// - el localhost (http://localhost:3000)
+// Configurar CORS para permitir peticiones desde:
+// - la URL en la variable de entorno `Main_Deploy`
+// - la URL en la variable de entorno `Personal_Deploy`
+// - localhost para desarrollo (puertos 3000 y 3001)
 const mainDeploy = process.env['Main_Deploy'];
 const personalDeploy = process.env['Personal_Deploy'];
 
 const allowedOrigins = [];
 if (mainDeploy) allowedOrigins.push(mainDeploy);
 if (personalDeploy) allowedOrigins.push(personalDeploy);
-// Permitir localhost para desarrollo
-allowedOrigins.push('http://localhost:3000');
+
+// Permitir localhost para desarrollo (backend en 3000, frontend en 3001)
+if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins.push('http://localhost:3000');
+    allowedOrigins.push('http://127.0.0.1:3000');
+    allowedOrigins.push('http://localhost:3001');
+    allowedOrigins.push('http://127.0.0.1:3001');
+}
 
 // Log para depuración: mostrar orígenes permitidos
 console.log('🔒 Orígenes CORS permitidos:', allowedOrigins);
